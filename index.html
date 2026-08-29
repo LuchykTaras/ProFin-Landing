@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>ProFin OS — операційна система управління прибутком</title>
+<meta name="description" content="ProFin OS об'єднує фінансові та операційні дані бізнесу в єдину систему управління прибутком."/>
+<link rel="stylesheet" href="style.css">
+</head>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="logo" href="#top">
+      <div class="logo-badge">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#08A078"/>
+        </svg>
+        <span>ProFin <strong>OS</strong></span>
+      </div>
+    </a>
+    <nav class="navlinks">
+      <a href="#about">Про систему</a><a href="#modules">Базовий пакет</a><a href="#additional">Модулі</a><a href="#how">Як працює</a><a href="#implementation">Впровадження</a><a href="#support">Підтримка</a>
+    </nav>
+    <a class="btn primary" href="#contact">Записатися на презентацію</a>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+<div class="container hero-grid">
+  <div>
+    <div class="eyebrow"><span class="dot"></span> операційна система управління прибутком</div>
+    <h1>Бачити цифри недостатньо. <span>Потрібно розуміти, що їх створило.</span></h1>
+    <p class="lead">ProFin OS об’єднує фінансові та операційні дані бізнесу в єдину систему управління — від первинної операції до фінансового результату та управлінського рішення.</p>
+    <div class="actions">
+      <a class="btn primary" href="#contact">Записатися на презентацію →</a>
+      <a class="btn ghost" href="#how">Як це працює</a>
+    </div>
+    <div class="micro">Не ви підлаштовуєтеся під систему, а система будується під вас.</div>
+  </div>
+  <div class="visual">
+    <div class="screen-head"><div class="screen-title">Management Dashboard</div><div class="pulse"></div></div>
+    <div class="kpis">
+      <div class="kpi"><small>Виручка</small><b>₴ 1.24M</b><small>↑ 12.8%</small></div>
+      <div class="kpi"><small>Прибуток</small><b>₴ 286K</b><small>↑ 7.4%</small></div>
+      <div class="kpi"><small>Маржа</small><b>23.1%</b><small>+2.1 п.п.</small></div>
+    </div>
+    <div class="chart">
+      <div class="linechart">
+        <svg viewBox="0 0 600 150" preserveAspectRatio="none">
+          <path d="M0,120 C80,105 95,90 145,100 C200,110 215,78 260,74 C310,70 332,82 365,60 C405,35 438,52 475,38 C520,20 548,31 600,12" fill="none" stroke="#12B98A" stroke-width="4" stroke-linecap="round"/>
+          <path d="M0,120 C80,105 95,90 145,100 C200,110 215,78 260,74 C310,70 332,82 365,60 C405,35 438,52 475,38 C520,20 548,31 600,12 L600,150 L0,150 Z" fill="rgba(18,185,138,.08)"/>
+        </svg>
+      </div>
+    </div>
+    <div class="sourcebar"><span class="chip">CRM</span><span class="chip">Склад</span><span class="chip">P&L</span><span class="chip">Cash Flow</span></div>
+  </div>
+</div>
+</section>
+
+<section class="slogan-strip">
+  <div class="container slogan-inner">
+    <span class="slogan-mark">ProFin OS</span>
+    <div class="slogan-text">Не ви підлаштовуєтеся під систему, <strong>а система будується під вас.</strong></div>
+  </div>
+</section>
+
+<section class="section alt" id="about">
+<div class="container">
+  <div class="eyebrow">01 — проблема</div>
+  <h2>Даних у бізнесі багато. Єдиної управлінської картини — немає.</h2>
+  <p class="intro">CRM показує продажі, бухгалтерія — регламентований облік, склад — залишки, а внутрішні таблиці живуть окремо. Власнику доводиться самостійно шукати зв’язок між цифрами.</p>
+  <div class="grid3">
+    <div class="card"><div class="num">Симптом 01</div><div class="problem">«Оборот є. А скільки ми реально заробили?»</div></div>
+    <div class="card"><div class="num">Симптом 02</div><div class="problem">«Прибуток є у звіті. Чому немає грошей?»</div></div>
+    <div class="card"><div class="num">Симптом 03</div><div class="problem">«Витрати зросли. Що саме їх створило?»</div></div>
+    <div class="card"><div class="num">Симптом 04</div><div class="problem">«Яку частину грошей на рахунку можна безпечно використати?»</div></div>
+    <div class="card"><div class="num">Симптом 05</div><div class="problem">«Який напрям або продукт насправді приносить прибуток?»</div></div>
+    <div class="card"><div class="num">Симптом 06</div><div class="problem">«Де починається відхилення і коли потрібно втрутитися?»</div></div>
+  </div>
+  <div style="margin:42px 0 18px"><h3 style="font-size:28px;margin:14px 0 0">Проблема часто починається не у звіті, а в процесах.</h3></div><div class="grid3"><div class="card"><div class="num">Процеси</div><div class="problem">Дані вводяться вручну в кілька різних таблиць.</div></div><div class="card"><div class="num">Якість даних</div><div class="problem">Операції дублюються, губляться або класифікуються по-різному.</div></div><div class="card"><div class="num">Управління</div><div class="problem">Керівник отримує інформацію із запізненням і не бачить цілісної картини.</div></div></div>
+</div>
+</section>
+
+<section class="section" id="how">
+<div class="container">
+  <div class="eyebrow">02 — логіка системи</div>
+  <h2>Від первинної операції до управлінського рішення.</h2>
+  <p class="intro">Одна дія в бізнесі одночасно впливає на гроші, ресурси, собівартість, зобов’язання та прибуток. ProFin OS пов’язує ці наслідки між собою.</p>
+  <div class="flow">
+    <div class="step"><small>Крок 01</small><strong>Дані</strong><span class="micro">CRM, файли, внутрішні реєстри</span></div>
+    <div class="step"><small>Крок 02</small><strong>Єдина база</strong><span class="micro">операції та історія</span></div>
+    <div class="step"><small>Крок 03</small><strong>Мапінг</strong><span class="micro">класифікація</span></div>
+    <div class="step"><small>Крок 04</small><strong>Фінансова модель</strong><span class="micro">CF, P&L, борги</span></div>
+    <div class="step"><small>Крок 05</small><strong>Дашборд</strong><span class="micro">ключові KPI</span></div>
+    <div class="step"><small>Крок 06</small><strong>Рішення</strong><span class="micro">дії власника</span></div>
+  </div>
+
+  <div class="section-cta">
+    <a class="btn primary" href="#contact">Записатися на презентацію →</a>
+  </div>
+</div>
+</section>
+
+
+<section class="section" id="implementation">
+<div class="container">
+  <div class="eyebrow">03 — впровадження</div>
+  <h2>Спочатку будуємо правильну управлінську логіку. Потім автоматизуємо її.</h2>
+  <p class="intro">ProFin OS — не готовий шаблон. Перед реалізацією досліджуються бізнес-процеси, дані та управлінські розриви, після чого формується архітектура системи, базовий пакет і перелік модулів розвитку.</p>
+  <div class="process">
+    <div class="card"><h3>Аудит бізнес-процесів</h3><p>Вивчаємо, як сьогодні побудовані фінансові та операційні процеси: звідки надходять дані, хто їх вносить, де виникають дублювання, ручна робота та управлінські розриви.</p></div>
+    <div class="card"><h3>Побудова персоналізації процесів</h3><p>Проєктуємо логіку ProFin OS під конкретну модель бізнесу: визначаємо структуру даних, правила обліку, необхідні звіти, ролі користувачів і процеси, які потрібно автоматизувати.</p></div>
+    <div class="card"><h3>Архітектура</h3><p>Правила, SOP, архітектурний паспорт і визначення базового пакета.</p></div>
+    <div class="card"><h3>Конфігурація</h3><p>Вибір додаткових модулів відповідно до задач конкретного бізнесу.</p></div>
+    <div class="card"><h3>Реалізація</h3><p>Технічне налаштування, перевірка та тестування.</p></div>
+    <div class="card"><h3>Впровадження</h3><p>Навчання команди та регламент щоденної роботи.</p></div>
+  </div>
+</div>
+</section>
+<section class="section alt" id="modules">
+<div class="container">
+  <div class="eyebrow">04 — конфігурація</div>
+  <h2>Не ви підлаштовуєтеся під систему, а система будується під вас.</h2>
+  <p class="intro">ProFin OS має базове фінансове ядро, з якого починається впровадження. Далі до нього підключаються лише ті модулі, які потрібні конкретній бізнес-моделі, масштабу та управлінським задачам компанії.</p>
+
+  <div class="package-grid">
+    <div class="package-card base-package">
+      <div class="package-header">
+        <div class="package-label">БАЗОВИЙ ПАКЕТ</div>
+        <a class="btn primary package-cta" href="#contact">Записатися на презентацію →</a>
+      </div>
+      <h3>Фінансова прозорість і контроль факту</h3>
+      <p class="package-intro">Стартова конфігурація ProFin OS, яка створює єдину основу для управління грошима та прибутком.</p>
+
+      <div class="package-items">
+        <div class="package-item"><span class="package-index">01</span><div><b>Ввід операцій або завантаження операцій</b><p>Єдина точка входу для фінансових даних: ручне введення або завантаження даних із зовнішніх джерел.</p></div></div>
+        <div class="package-item"><span class="package-index">02</span><div><b>База операцій</b><p>Центральна база, де зберігаються операції, історія змін і формується єдине джерело фінансової інформації.</p></div></div>
+        <div class="package-item"><span class="package-index">03</span><div><b>Cash Flow</b><p>Показує, звідки приходять гроші, куди вони йдуть, залишки на рахунках і фактичний рух коштів.</p></div></div>
+        <div class="package-item"><span class="package-index">04</span><div><b>P&amp;L — факт</b><p>Показує фактичну виручку, витрати, собівартість і фінансовий результат бізнесу.</p></div></div>
+        <div class="package-item"><span class="package-index">05</span><div><b>Дашборд керівника</b><p>Концентрує ключові показники в одному місці та фокусує увагу на точках прийняття рішень.</p></div></div>
+      </div>
+    </div>
+
+    <div class="package-side">
+      <div class="mini-card">
+        <span class="badge">ЩО ДАЄ БАЗА</span>
+        <h3>Єдину логіку замість набору таблиць</h3>
+        <p>Базовий пакет дозволяє побудувати контроль фактичних операцій, руху грошей і фінансового результату без перевантаження системи непотрібним функціоналом.</p>
+      </div>
+      <div class="mini-card">
+        <span class="badge">ПРИНЦИП</span>
+        <h3>Починаємо з необхідного. Розвиваємо — за потребою.</h3>
+        <p>Після запуску базової конфігурації архітектура може поступово розширюватися новими модулями.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section class="section" id="additional">
+<div class="container">
+  <div class="eyebrow">05 — додаткові модулі</div>
+  <h2>Розширюйте ProFin OS відповідно до задач бізнесу.</h2>
+  <p class="intro">Модулі підключаються до фінансового ядра поступово. Дані вводяться один раз, перевіряються в процесі та використовуються у взаємопов’язаних контурах системи.</p>
+
+  <div class="addons-grid">
+    <div class="addon-card"><span class="addon-num">01</span><h3>P&amp;L — план</h3><p>Перетворює фінансові цілі на конкретну планову модель. Дозволяє планувати доходи й витрати, порівнювати план із фактом, бачити відхилення та пов’язувати фінансові цілі з операційними діями команди.</p><div class="addon-value"><b>Цінність:</b> планування стає робочим інструментом, а не формальним бюджетом.</div></div>
+
+    <div class="addon-card"><span class="addon-num">02</span><h3>Складський модуль</h3><p>Контролює запаси, партії, собівартість і складські залишки: надходження, продажі, використання, списання та повернення. Зберігає партію, серію, термін придатності й собівартість.</p><div class="addon-value"><b>Цінність:</b> зменшує ризик подвійного списання, втрати партій і викривлення маржинальності.</div></div>
+
+    <div class="addon-card"><span class="addon-num">03</span><h3>Міжфілійне складське переміщення</h3><p>Фіксує передачу та приймання запасів між підрозділами зі збереженням кількості, партії, серії та собівартості. Залишки синхронізуються без ручного дублювання.</p><div class="addon-value"><b>Цінність:</b> власник бачить, де перебуває ресурс і хто відповідає за його переміщення.</div></div>
+
+    <div class="addon-card"><span class="addon-num">04</span><h3>Активи та амортизація</h3><p>Веде управлінський облік основних засобів: вартість, категорію, строк амортизації та дату введення в експлуатацію. Розраховує амортизацію й залишкову вартість та включає їх до P&amp;L.</p><div class="addon-value"><b>Цінність:</b> показує реальну вартість використання активів і допомагає планувати їх оновлення.</div></div>
+
+    <div class="addon-card"><span class="addon-num">05</span><h3>Клієнтський модуль</h3><p>Формує керовану базу клієнтів, пов’язану з операціями та історією послуг. Містить контактні дані, відповідального спеціаліста, статус, унікальний ID і теги для сегментації.</p><div class="addon-value"><b>Цінність:</b> створює основу для сервісу, повторних пропозицій, сегментації та майбутньої системи лояльності.</div></div>
+
+    <div class="addon-card"><span class="addon-num">06</span><h3>Дашборд</h3><p>Зводить фінансові й операційні показники в єдиний візуальний центр: доходи, витрати, прибутковість, залишки коштів, складські ризики та статус обліку.</p><div class="addon-value"><b>Цінність:</b> перетворює великий масив операцій на коротку картину стану бізнесу та зон, де потрібне рішення.</div></div>
+  </div>
+
+  <div class="system-note">
+    <div>
+      <span class="badge">ПРИНЦИП МОДУЛЬНОСТІ</span>
+      <h3>Розвиваємо потрібні контури без перебудови ядра.</h3>
+      <p>Єдині правила введення та перевірки даних зменшують ручне дублювання й розбіжності між звітами. Нові модулі можна підключати поступово, зберігаючи зв’язок між операціями, фінансовим результатом, ресурсами та управлінськими рішеннями.</p>
+    </div>
+    <div class="system-flow">
+      <span>Операція</span><b>→</b><span>База</span><b>→</b><span>Модулі</span><b>→</b><span>Дашборд</span><b>→</b><span>Рішення</span>
+    </div>
+  </div>
+</div>
+</section>
+
+
+<section class="section alt">
+<div class="container">
+  <div class="eyebrow">06 — аналітика</div>
+  <h2>Не «скільки заробив бізнес?», а «що саме створило цей результат?»</h2>
+  <p class="intro">Аналітика може показувати прибутковість за бізнес-напрямами, продуктами, послугами, проєктами, підрозділами, командами, спеціалістами, клієнтськими сегментами та періодами.</p>
+  <div class="grid3">
+    <div class="card"><h3>Бізнес-напрями</h3><p>Порівнюйте виручку, прибуток і маржинальність різних напрямів.</p></div>
+    <div class="card"><h3>Продукти та послуги</h3><p>Розумійте, що формує результат, а що його зменшує.</p></div>
+    <div class="card"><h3>Команди та спеціалісти</h3><p>Бачте вклад окремих команд та відповідальних осіб.</p></div>
+  </div>
+</div>
+</section>
+
+<section class="section alt">
+<div class="container">
+  <div class="eyebrow">07 — різниця</div>
+  <h2>ProFin OS поєднує те, що зазвичай існує окремо.</h2>
+  <div class="grid2">
+    <div class="card"><h3>Бухгалтерія</h3><p>«Як правильно зафіксувати операцію?»</p></div>
+    <div class="card"><h3>Товари та послуги</h3><p>«Що саме створює виручку та фінансовий результат?»</p></div>
+    <div class="card"><h3>CRM</h3><p>«Що було продано?»</p></div>
+    <div class="card" style="border-color:#BFE2D3;background:#F2FAF6"><h3 style="color:var(--brand2)">ProFin OS</h3><p>«Чому бізнес отримав саме такий результат?»</p></div>
+  </div>
+</div>
+</section>
+
+
+
+<section class="section alt">
+<div class="container">
+  <div class="eyebrow">08 — результат</div>
+  <h2>Від розрізнених цифр — до управлінської ясності.</h2>
+  <div class="compare">
+    <div class="side before">
+      <h3>До ProFin OS</h3>
+      <div class="row"><span>Дані</span><span>Незалежні таблиці</span></div>
+      <div class="row"><span>Цифри</span><span>Суперечливі</span></div>
+      <div class="row"><span>Звітність</span><span>Зводиться вручну</span></div>
+      <div class="row"><span>Реакція</span><span>Після завершення місяця</span></div>
+    </div>
+    <div class="side after">
+      <h3 style="color:var(--brand2)">Після впровадження</h3>
+      <div class="row"><span>Дані</span><span>Єдина система</span></div>
+      <div class="row"><span>Цифри</span><span>Єдине джерело даних</span></div>
+      <div class="row"><span>Звітність</span><span>Автоматизована модель</span></div>
+      <div class="row"><span>Реакція</span><span>Відхилення видно раніше</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+  <div class="eyebrow">09 — ключова цінність</div>
+  <h2>Бачити → розуміти → впливати.</h2>
+  <p class="intro">ProFin OS дає власнику не більше звітів, а більше причинно-наслідкової ясності: де створюється прибуток, що відбувається з грошима, де виникають зобов’язання, що відбувається із собівартістю та де починається відхилення.</p>
+
+  <div class="section-cta">
+    <a class="btn primary" href="#contact">Записатися на презентацію →</a>
+  </div>
+</div>
+</section>
+
+<section class="section" id="support"><div class="container"><div class="eyebrow">10 — підтримка після впровадження</div><h2>Система не залишається без супроводу.</h2><p class="intro">Після запуску ProFin OS команда може отримувати два рівні підтримки — управлінський і технічний.</p><div class="grid2"><div class="card"><div class="num">КОНСАЛТИНГОВА ПІДТРИМКА</div><h3>Допомагаємо працювати з цифрами як з інструментом управління.</h3><p>Пояснення логіки показників, допомога в читанні управлінської звітності, аналізі відхилень та розвитку фінансової моделі відповідно до змін у бізнесі.</p></div><div class="card"><div class="num">ТЕХНІЧНА ПІДТРИМКА</div><h3>Підтримуємо стабільну роботу системи.</h3><p>Контроль коректності роботи, допомога з даними, мапінгом і завантаженнями, виправлення технічних помилок та підтримка розвитку модулів.</p></div></div></div></section><section class="section alt" id="contact">
+<div class="container">
+  <div class="cta">
+    <div>
+      <div class="eyebrow">Персональна презентація ProFin OS</div>
+      <h2 style="margin-top:18px">Подивіться, як ProFin OS може працювати саме у вашому бізнесі.</h2>
+      <p class="intro" style="margin-bottom:0">На презентації консультант покаже логіку системи, обговорить ваші процеси та допоможе визначити базовий пакет і додаткові модулі.</p>
+    </div>
+    <form class="form" onsubmit="event.preventDefault(); alert('Прототип: форма працюватиме після підключення CRM / email.');">
+      <input placeholder="Ім’я" required/>
+      <input placeholder="Компанія"/>
+      <input type="tel" placeholder="Телефон" required/>
+      <input type="email" placeholder="Email"/>
+      <select><option>Що зараз використовуєте?</option><option>Excel / Google Sheets</option><option>CRM</option><option>ERP</option><option>Бухгалтерська програма</option><option>Декілька систем</option></select>
+      <button class="btn primary" type="submit">Записатися на презентацію з консультантом</button>
+    </form>
+  </div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="container footerrow">
+  <div class="logo-badge">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#08A078"/>
+      </svg>
+      <span>ProFin <strong>OS</strong></span>
+    </div>
+  <div>© ProFin OS · Всі права захищено</div>
+</div>
+</footer>
+  <script src="script.js"></script>
+</body>
+</html>
