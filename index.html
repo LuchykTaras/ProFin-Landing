@@ -11,15 +11,12 @@
 <body>
 <header>
   <div class="container nav">
-    <a class="logo" href="#top">
-      <div class="logo-badge">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#08A078"/>
-        </svg>
-        <span>ProFin <strong>OS</strong></span>
-      </div>
-    </a>
-    <nav class="navlinks">
+
+  <a class="nav-logo" href="#top">
+    <img src="profin-logo.png" alt="ProFin OS">
+  </a>
+
+  <nav class="navlinks">
       <a href="#about">Про систему</a><a href="#modules">Базовий пакет</a><a href="#additional">Модулі</a><a href="#how">Як працює</a><a href="#implementation">Впровадження</a><a href="#support">Підтримка</a>
     </nav>
     <a class="btn primary" href="#contact">Записатися на презентацію</a>
@@ -29,18 +26,43 @@
 <main id="top">
 <section class="hero">
 <div class="container hero-grid">
-  <div>
-    <div class="eyebrow"><span class="dot"></span> операційна система управління прибутком</div>
-    <h1>Бачити цифри недостатньо. <span>Потрібно розуміти, що їх створило.</span></h1>
-    <p class="lead">ProFin OS об’єднує фінансові та операційні дані бізнесу в єдину систему управління — від первинної операції до фінансового результату та управлінського рішення.</p>
-    <div class="actions">
-      <a class="btn primary" href="#contact">Записатися на презентацію →</a>
-      <a class="btn ghost" href="#how">Як це працює</a>
+
+  <div class="hero-copy">
+    <div class="eyebrow">
+      <span class="dot"></span>
+      операційна система управління прибутком
     </div>
-    <div class="micro">Не ви підлаштовуєтеся під систему, а система будується під вас.</div>
+
+    <h1>
+      Бачити цифри недостатньо.
+      <span>Потрібно розуміти, що їх створило.</span>
+    </h1>
+
+    <p class="lead">
+      ProFin OS об’єднує фінансові та операційні дані бізнесу в єдину
+      систему управління — від первинної операції до фінансового
+      результату та управлінського рішення.
+    </p>
+
+    <div class="actions">
+      <a class="btn primary" href="#contact">
+        Записатися на презентацію →
+      </a>
+
+      <a class="btn ghost" href="#how">
+        Як це працює
+      </a>
+    </div>
+
+    <div class="micro">
+      Не ви підлаштовуєтеся під систему, а система будується під вас.
+    </div>
   </div>
   <div class="visual">
-    <div class="screen-head"><div class="screen-title">Management Dashboard</div><div class="pulse"></div></div>
+    <div class="screen-head">
+  <div class="screen-title">Дашборд Керівника</div>
+  <div class="pulse"></div>
+</div>
     <div class="kpis">
       <div class="kpi"><small>Виручка</small><b>₴ 1.24M</b><small>↑ 12.8%</small></div>
       <div class="kpi"><small>Прибуток</small><b>₴ 286K</b><small>↑ 7.4%</small></div>
@@ -54,8 +76,11 @@
         </svg>
       </div>
     </div>
-    <div class="sourcebar"><span class="chip">CRM</span><span class="chip">Склад</span><span class="chip">P&L</span><span class="chip">Cash Flow</span></div>
-  </div>
+    <div class="sourcebar">
+  <span class="chip">Склад</span>
+  <span class="chip">P&L</span>
+  <span class="chip">Cash Flow</span>
+</div>
 </div>
 </section>
 
@@ -68,7 +93,7 @@
 
 <section class="section alt" id="about">
 <div class="container">
-  <div class="eyebrow">01 — проблема</div>
+  <div class="eyebrow">Проблема</div>
   <h2>Даних у бізнесі багато. Єдиної управлінської картини — немає.</h2>
   <p class="intro">CRM показує продажі, бухгалтерія — регламентований облік, склад — залишки, а внутрішні таблиці живуть окремо. Власнику доводиться самостійно шукати зв’язок між цифрами.</p>
   <div class="grid3">
@@ -85,7 +110,7 @@
 
 <section class="section" id="how">
 <div class="container">
-  <div class="eyebrow">02 — логіка системи</div>
+  <div class="eyebrow">Логіка системи</div>
   <h2>Від первинної операції до управлінського рішення.</h2>
   <p class="intro">Одна дія в бізнесі одночасно впливає на гроші, ресурси, собівартість, зобов’язання та прибуток. ProFin OS пов’язує ці наслідки між собою.</p>
   <div class="flow">
@@ -106,7 +131,7 @@
 
 <section class="section" id="implementation">
 <div class="container">
-  <div class="eyebrow">03 — впровадження</div>
+  <div class="eyebrow">Впровадження</div>
   <h2>Спочатку будуємо правильну управлінську логіку. Потім автоматизуємо її.</h2>
   <p class="intro">ProFin OS — не готовий шаблон. Перед реалізацією досліджуються бізнес-процеси, дані та управлінські розриви, після чого формується архітектура системи, базовий пакет і перелік модулів розвитку.</p>
   <div class="process">
@@ -121,7 +146,7 @@
 </section>
 <section class="section alt" id="modules">
 <div class="container">
-  <div class="eyebrow">04 — конфігурація</div>
+  <div class="eyebrow">Конфігурація</div>
   <h2>Не ви підлаштовуєтеся під систему, а система будується під вас.</h2>
   <p class="intro">ProFin OS має базове фінансове ядро, з якого починається впровадження. Далі до нього підключаються лише ті модулі, які потрібні конкретній бізнес-моделі, масштабу та управлінським задачам компанії.</p>
 
@@ -162,7 +187,7 @@
 
 <section class="section" id="additional">
 <div class="container">
-  <div class="eyebrow">05 — додаткові модулі</div>
+  <div class="eyebrow">Додаткові модулі</div>
   <h2>Розширюйте ProFin OS відповідно до задач бізнесу.</h2>
   <p class="intro">Модулі підключаються до фінансового ядра поступово. Дані вводяться один раз, перевіряються в процесі та використовуються у взаємопов’язаних контурах системи.</p>
 
@@ -177,7 +202,12 @@
 
     <div class="addon-card"><span class="addon-num">05</span><h3>Клієнтський модуль</h3><p>Формує керовану базу клієнтів, пов’язану з операціями та історією послуг. Містить контактні дані, відповідального спеціаліста, статус, унікальний ID і теги для сегментації.</p><div class="addon-value"><b>Цінність:</b> створює основу для сервісу, повторних пропозицій, сегментації та майбутньої системи лояльності.</div></div>
 
-    <div class="addon-card"><span class="addon-num">06</span><h3>Дашборд</h3><p>Зводить фінансові й операційні показники в єдиний візуальний центр: доходи, витрати, прибутковість, залишки коштів, складські ризики та статус обліку.</p><div class="addon-value"><b>Цінність:</b> перетворює великий масив операцій на коротку картину стану бізнесу та зон, де потрібне рішення.</div></div>
+    <div class="addon-card">
+  <span class="addon-num">06</span>
+  <h3>Кредиторська та дебіторська заборгованість</h3>
+  <p>Зводить фінансові й операційні показники в єдиний візуальний центр: доходи, витрати, прибутковість, залишки коштів, складські ризики та статус обліку.</p>
+  <div class="addon-value"><b>Цінність:</b> перетворює великий масив операцій на коротку картину стану бізнесу та зон, де потрібне рішення.</div>
+</div>
   </div>
 
   <div class="system-note">
@@ -196,7 +226,7 @@
 
 <section class="section alt">
 <div class="container">
-  <div class="eyebrow">06 — аналітика</div>
+  <div class="eyebrow">Аналітика</div>
   <h2>Не «скільки заробив бізнес?», а «що саме створило цей результат?»</h2>
   <p class="intro">Аналітика може показувати прибутковість за бізнес-напрямами, продуктами, послугами, проєктами, підрозділами, командами, спеціалістами, клієнтськими сегментами та періодами.</p>
   <div class="grid3">
@@ -209,22 +239,7 @@
 
 <section class="section alt">
 <div class="container">
-  <div class="eyebrow">07 — різниця</div>
-  <h2>ProFin OS поєднує те, що зазвичай існує окремо.</h2>
-  <div class="grid2">
-    <div class="card"><h3>Бухгалтерія</h3><p>«Як правильно зафіксувати операцію?»</p></div>
-    <div class="card"><h3>Товари та послуги</h3><p>«Що саме створює виручку та фінансовий результат?»</p></div>
-    <div class="card"><h3>CRM</h3><p>«Що було продано?»</p></div>
-    <div class="card" style="border-color:#BFE2D3;background:#F2FAF6"><h3 style="color:var(--brand2)">ProFin OS</h3><p>«Чому бізнес отримав саме такий результат?»</p></div>
-  </div>
-</div>
-</section>
-
-
-
-<section class="section alt">
-<div class="container">
-  <div class="eyebrow">08 — результат</div>
+  <div class="eyebrow">Результат</div>
   <h2>Від розрізнених цифр — до управлінської ясності.</h2>
   <div class="compare">
     <div class="side before">
@@ -247,7 +262,7 @@
 
 <section class="section">
 <div class="container">
-  <div class="eyebrow">09 — ключова цінність</div>
+  <div class="eyebrow">Ключова цінність</div>
   <h2>Бачити → розуміти → впливати.</h2>
   <p class="intro">ProFin OS дає власнику не більше звітів, а більше причинно-наслідкової ясності: де створюється прибуток, що відбувається з грошима, де виникають зобов’язання, що відбувається із собівартістю та де починається відхилення.</p>
 
@@ -257,7 +272,7 @@
 </div>
 </section>
 
-<section class="section" id="support"><div class="container"><div class="eyebrow">10 — підтримка після впровадження</div><h2>Система не залишається без супроводу.</h2><p class="intro">Після запуску ProFin OS команда може отримувати два рівні підтримки — управлінський і технічний.</p><div class="grid2"><div class="card"><div class="num">КОНСАЛТИНГОВА ПІДТРИМКА</div><h3>Допомагаємо працювати з цифрами як з інструментом управління.</h3><p>Пояснення логіки показників, допомога в читанні управлінської звітності, аналізі відхилень та розвитку фінансової моделі відповідно до змін у бізнесі.</p></div><div class="card"><div class="num">ТЕХНІЧНА ПІДТРИМКА</div><h3>Підтримуємо стабільну роботу системи.</h3><p>Контроль коректності роботи, допомога з даними, мапінгом і завантаженнями, виправлення технічних помилок та підтримка розвитку модулів.</p></div></div></div></section><section class="section alt" id="contact">
+<section class="section" id="support"><div class="container"><div class="eyebrow">Підтримка після впровадження</div><h2>Система не залишається без супроводу.</h2><p class="intro">Після запуску ProFin OS команда може отримувати два рівні підтримки — управлінський і технічний.</p><div class="grid2"><div class="card"><div class="num">КОНСАЛТИНГОВА ПІДТРИМКА</div><h3>Допомагаємо працювати з цифрами як з інструментом управління.</h3><p>Пояснення логіки показників, допомога в читанні управлінської звітності, аналізі відхилень та розвитку фінансової моделі відповідно до змін у бізнесі.</p></div><div class="card"><div class="num">ТЕХНІЧНА ПІДТРИМКА</div><h3>Підтримуємо стабільну роботу системи.</h3><p>Контроль коректності роботи, допомога з даними, мапінгом і завантаженнями, виправлення технічних помилок та підтримка розвитку модулів.</p></div></div></div></section><section class="section alt" id="contact">
 <div class="container">
   <div class="cta">
     <div>
@@ -280,12 +295,9 @@
 
 <footer>
 <div class="container footerrow">
-  <div class="logo-badge">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#08A078"/>
-      </svg>
-      <span>ProFin <strong>OS</strong></span>
-    </div>
+  <div class="footer-logo">
+  <img src="profin-logo.png" alt="ProFin OS">
+</div>
   <div>© ProFin OS · Всі права захищено</div>
 </div>
 </footer>
