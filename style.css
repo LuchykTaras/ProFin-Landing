@@ -498,3 +498,35 @@ footer{
 .mobile-toggle{
   display:none !important;
 }
+
+/* LEAD FORM STATUS */
+
+.lead-honeypot{
+  position:absolute !important;
+  left:-9999px !important;
+  width:1px !important;
+  height:1px !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+.lead-status{
+  min-height:20px;
+  font-size:13px;
+  line-height:1.4;
+  color:#66736D;
+}
+
+.lead-status[data-type="success"]{
+  color:#0B8F6B;
+}
+
+.lead-status[data-type="error"]{
+  color:#A33232;
+}
+
+#lead-submit:disabled{
+  opacity:.7;
+  cursor:wait;
+  transform:none;
+}

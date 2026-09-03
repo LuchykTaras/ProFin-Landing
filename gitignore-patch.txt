@@ -1,0 +1,5 @@
+# Додати в кінець .gitignore
+
+.env
+.env.*
+!.env.example

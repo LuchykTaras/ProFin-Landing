@@ -1,0 +1,60 @@
+<form class="form" id="lead-form">
+  <input
+    type="text"
+    name="name"
+    placeholder="Ім’я"
+    autocomplete="name"
+    maxlength="100"
+    required
+  />
+
+  <input
+    type="text"
+    name="company"
+    placeholder="Компанія"
+    autocomplete="organization"
+    maxlength="120"
+  />
+
+  <input
+    type="tel"
+    name="phone"
+    placeholder="Телефон"
+    autocomplete="tel"
+    maxlength="40"
+    required
+  />
+
+  <input
+    type="email"
+    name="email"
+    placeholder="Email"
+    autocomplete="email"
+    maxlength="160"
+  />
+
+  <select name="currentSystem">
+    <option value="">Що зараз використовуєте?</option>
+    <option value="Excel / Google Sheets">Excel / Google Sheets</option>
+    <option value="CRM">CRM</option>
+    <option value="ERP">ERP</option>
+    <option value="Бухгалтерська програма">Бухгалтерська програма</option>
+    <option value="Декілька систем">Декілька систем</option>
+  </select>
+
+  <!-- Honeypot: звичайний користувач це поле не бачить -->
+  <input
+    type="text"
+    name="website"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+    class="lead-honeypot"
+  />
+
+  <button class="btn primary" type="submit" id="lead-submit">
+    Записатися на презентацію з консультантом
+  </button>
+
+  <div class="lead-status" id="lead-form-status" aria-live="polite"></div>
+</form>
