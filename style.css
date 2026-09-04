@@ -339,7 +339,9 @@ footer{
 
 .badge{display:inline-block;border:1px solid #CFE7DE;background:#F4FBF8;color:#16775C;border-radius:999px;padding:8px 11px;font-size:12px}
 
-.slogan-strip{padding:22px 0;border-top:1px solid #E4ECE8;border-bottom:1px solid #E4ECE8;background:#F7FAF8}
+.slogan-strip{
+  display:none;
+}
 
 .slogan-inner{display:flex;align-items:center;justify-content:space-between;gap:28px}
 
