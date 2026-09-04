@@ -3,12 +3,16 @@ const TELEGRAM_API = 'https://api.telegram.org';
 
 export default async function handler(req, res) {
 
-  if (req.method !== 'POST') {
+  if (
+    req.method !==
+    'POST'
+  ) {
 
     res.setHeader(
       'Allow',
       'POST'
     );
+
 
     return res.status(405).json({
       ok: false
@@ -19,7 +23,7 @@ export default async function handler(req, res) {
 
   /*
    * =========================================================
-   * WEBHOOK SECURITY
+   * WEBHOOK SECRET
    * =========================================================
    */
 
@@ -36,7 +40,8 @@ export default async function handler(req, res) {
 
   if (
     expectedSecret &&
-    receivedSecret !== expectedSecret
+    receivedSecret !==
+      expectedSecret
   ) {
 
     return res.status(403).json({
@@ -46,8 +51,16 @@ export default async function handler(req, res) {
   }
 
 
+  /*
+   * =========================================================
+   * UPDATE
+   * =========================================================
+   */
+
   const update =
-    parseBody(req.body);
+    parseBody(
+      req.body
+    );
 
 
   if (!update) {
@@ -60,8 +73,8 @@ export default async function handler(req, res) {
 
 
   /*
-   * Нас зараз цікавлять тільки
-   * натискання inline-кнопок.
+   * Нас зараз цікавлять
+   * тільки inline-кнопки.
    */
 
   const callback =
@@ -76,6 +89,12 @@ export default async function handler(req, res) {
 
   }
 
+
+  /*
+   * =========================================================
+   * CONFIG
+   * =========================================================
+   */
 
   const token =
     process.env
@@ -112,15 +131,17 @@ export default async function handler(req, res) {
 
 
   /*
-   * Не дозволяємо обробляти кнопки
-   * з іншої Telegram-групи.
+   * =========================================================
+   * CHAT PROTECTION
+   * =========================================================
    */
 
   if (
-    callbackChatId !== chatId
+    callbackChatId !==
+    chatId
   ) {
 
-    await answerCallback(
+    await safeAnswerCallback(
       token,
       callback.id,
       'Ця кнопка не належить робочій групі.'
@@ -135,7 +156,9 @@ export default async function handler(req, res) {
 
 
   /*
-   * Перевірка менеджера.
+   * =========================================================
+   * MANAGER PROTECTION
+   * =========================================================
    */
 
   if (
@@ -144,7 +167,7 @@ export default async function handler(req, res) {
     )
   ) {
 
-    await answerCallback(
+    await safeAnswerCallback(
       token,
       callback.id,
       'У вас немає доступу до зміни статусу.'
@@ -158,29 +181,389 @@ export default async function handler(req, res) {
   }
 
 
-  /*
-   * Отримуємо статус
-   * з callback_data.
-   */
+  const message =
+    callback.message;
 
-  const statusKey =
+
+  if (!message) {
+
+    await safeAnswerCallback(
+      token,
+      callback.id,
+      'Повідомлення не знайдено.'
+    );
+
+
+    return res.status(200).json({
+      ok: true
+    });
+
+  }
+
+
+  const callbackData =
     String(
-      callback.data || ''
-    ).replace(
-      'lead_status:',
+      callback.data ||
       ''
     );
 
 
-  const status =
-    getStatus(
-      statusKey
+  /*
+   * =========================================================
+   * DELETE NOOP
+   * =========================================================
+   */
+
+  if (
+    callbackData ===
+    'lead_delete:noop'
+  ) {
+
+    await safeAnswerCallback(
+      token,
+      callback.id,
+      'Оберіть: видалити або скасувати.'
     );
 
 
-  if (!status) {
+    return res.status(200).json({
+      ok: true
+    });
 
-    await answerCallback(
+  }
+
+
+  /*
+   * =========================================================
+   * DELETE REQUEST
+   * =========================================================
+   *
+   * Перший клік по кнопці
+   * "Видалити".
+   *
+   * Сам лід ще НЕ видаляється.
+   */
+
+  if (
+    callbackData ===
+    'lead_delete:request'
+  ) {
+
+    const currentStatusKey =
+      detectStatusKeyFromText(
+        message.text ||
+        ''
+      );
+
+
+    try {
+
+      await telegram(
+        token,
+        'editMessageReplyMarkup',
+        {
+
+          chat_id:
+            message.chat.id,
+
+          message_id:
+            message.message_id,
+
+          reply_markup:
+            buildDeleteConfirmKeyboard(
+              currentStatusKey
+            )
+
+        }
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Підтвердьте видалення ліда.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    } catch (error) {
+
+      console.error(
+        'Delete request error:',
+        error
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Не вдалося відкрити підтвердження.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    }
+
+  }
+
+
+  /*
+   * =========================================================
+   * DELETE CANCEL
+   * =========================================================
+   */
+
+  if (
+    callbackData.startsWith(
+      'lead_delete:cancel:'
+    )
+  ) {
+
+    const currentStatusKey =
+      callbackData
+        .split(':')[2] ||
+      'new';
+
+
+    try {
+
+      await telegram(
+        token,
+        'editMessageReplyMarkup',
+        {
+
+          chat_id:
+            message.chat.id,
+
+          message_id:
+            message.message_id,
+
+          reply_markup:
+            buildStatusKeyboard(
+              currentStatusKey
+            )
+
+        }
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Видалення скасовано.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    } catch (error) {
+
+      console.error(
+        'Delete cancel error:',
+        error
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Не вдалося скасувати дію.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    }
+
+  }
+
+
+  /*
+   * =========================================================
+   * DELETE CONFIRM
+   * =========================================================
+   *
+   * Бази даних поки немає.
+   *
+   * Тому тут видаляється
+   * саме Telegram-картка ліда.
+   */
+
+  if (
+    callbackData ===
+    'lead_delete:confirm'
+  ) {
+
+    const managerName =
+      getManagerName(
+        callback.from
+      );
+
+
+    let deleted =
+      false;
+
+
+    try {
+
+      await telegram(
+        token,
+        'deleteMessage',
+        {
+
+          chat_id:
+            message.chat.id,
+
+          message_id:
+            message.message_id
+
+        }
+      );
+
+
+      deleted =
+        true;
+
+    } catch (deleteError) {
+
+      console.error(
+        'Telegram deleteMessage error:',
+        deleteError
+      );
+
+    }
+
+
+    /*
+     * Якщо Telegram дозволив
+     * фізично видалити повідомлення.
+     */
+
+    if (deleted) {
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Лід видалено.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    }
+
+
+    /*
+     * =========================================================
+     * DELETE FALLBACK
+     * =========================================================
+     *
+     * Якщо старе повідомлення
+     * вже неможливо фізично видалити,
+     * прибираємо з нього персональні дані.
+     */
+
+    try {
+
+      await telegram(
+        token,
+        'editMessageText',
+        {
+
+          chat_id:
+            message.chat.id,
+
+          message_id:
+            message.message_id,
+
+          text:
+            [
+
+              '🗑️ <b>Лід видалений</b>',
+
+              '',
+
+              `<b>Видалив:</b> ${html(
+                managerName
+              )}`,
+
+              `<b>Час:</b> ${html(
+                formatNow()
+              )}`
+
+            ].join('\n'),
+
+          parse_mode:
+            'HTML',
+
+          reply_markup: {
+            inline_keyboard: []
+          }
+
+        }
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Картку ліда очищено.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    } catch (fallbackError) {
+
+      console.error(
+        'Delete fallback error:',
+        fallbackError
+      );
+
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        'Не вдалося видалити картку.'
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    }
+
+  }
+
+
+  /*
+   * =========================================================
+   * STATUS CALLBACK
+   * =========================================================
+   */
+
+  if (
+    !callbackData.startsWith(
+      'lead_status:'
+    )
+  ) {
+
+    await safeAnswerCallback(
       token,
       callback.id,
       'Невідома дія.'
@@ -194,19 +577,57 @@ export default async function handler(req, res) {
   }
 
 
+  const statusKey =
+    callbackData.replace(
+      'lead_status:',
+      ''
+    );
+
+
+  const status =
+    getStatus(
+      statusKey
+    );
+
+
+  if (!status) {
+
+    await safeAnswerCallback(
+      token,
+      callback.id,
+      'Невідомий статус.'
+    );
+
+
+    return res.status(200).json({
+      ok: true
+    });
+
+  }
+
+
+  /*
+   * =========================================================
+   * MANAGER
+   * =========================================================
+   */
+
   const managerName =
     getManagerName(
       callback.from
     );
 
 
-  const message =
-    callback.message;
-
+  /*
+   * =========================================================
+   * NEW LEAD TEXT
+   * =========================================================
+   */
 
   const newText =
     buildUpdatedLeadText(
-      message.text || '',
+      message.text ||
+      '',
       status,
       managerName
     );
@@ -218,17 +639,19 @@ export default async function handler(req, res) {
     );
 
 
-  try {
+  /*
+   * =========================================================
+   * UPDATE LEAD CARD
+   * =========================================================
+   */
 
-    /*
-     * Редагуємо ТІЛЬКИ
-     * конкретне повідомлення ліда.
-     */
+  try {
 
     await telegram(
       token,
       'editMessageText',
       {
+
         chat_id:
           message.chat.id,
 
@@ -246,16 +669,12 @@ export default async function handler(req, res) {
 
         reply_markup:
           newKeyboard
+
       }
     );
 
 
-    /*
-     * Закриваємо loading
-     * на Telegram inline-кнопці.
-     */
-
-    await answerCallback(
+    await safeAnswerCallback(
       token,
       callback.id,
       `Статус: ${status.label}`
@@ -268,13 +687,44 @@ export default async function handler(req, res) {
 
   } catch (error) {
 
+    /*
+     * Повторний клік по тому самому
+     * статусу іноді може дати:
+     *
+     * message is not modified
+     */
+
+    if (
+      String(
+        error.message ||
+        error
+      ).toLowerCase()
+        .includes(
+          'message is not modified'
+        )
+    ) {
+
+      await safeAnswerCallback(
+        token,
+        callback.id,
+        `Статус уже встановлено: ${status.label}`
+      );
+
+
+      return res.status(200).json({
+        ok: true
+      });
+
+    }
+
+
     console.error(
-      'Telegram callback error:',
+      'Telegram status update error:',
       error
     );
 
 
-    await answerCallback(
+    await safeAnswerCallback(
       token,
       callback.id,
       'Не вдалося змінити статус.'
@@ -301,42 +751,62 @@ function getStatus(key) {
   const statuses = {
 
     work: {
+
       icon:
         '🟡',
 
       label:
         'В РОБОТІ'
+
     },
 
 
     contacted: {
+
       icon:
         '🟢',
 
       label:
         'ЗВ’ЯЗАЛИСЬ'
+
     },
 
 
     irrelevant: {
+
       icon:
         '⚫',
 
       label:
         'НЕАКТУАЛЬНИЙ'
+
+    },
+
+
+    done: {
+
+      icon:
+        '🏁',
+
+      label:
+        'ВИКОНАНО'
+
     }
 
   };
 
 
-  return statuses[key] || null;
+  return (
+    statuses[key] ||
+    null
+  );
 
 }
 
 
 /*
  * =========================================================
- * INLINE KEYBOARD
+ * MAIN STATUS KEYBOARD
  * =========================================================
  */
 
@@ -382,6 +852,23 @@ function buildStatusKeyboard(
           'irrelevant',
           '❌ Неактуальний'
         )
+      ],
+
+      [
+        button(
+          'done',
+          '🏁 Виконано'
+        )
+      ],
+
+      [
+        {
+          text:
+            '🗑️ Видалити',
+
+          callback_data:
+            'lead_delete:request'
+        }
       ]
 
     ]
@@ -393,7 +880,130 @@ function buildStatusKeyboard(
 
 /*
  * =========================================================
- * UPDATE LEAD CARD
+ * DELETE CONFIRM KEYBOARD
+ * =========================================================
+ */
+
+function buildDeleteConfirmKeyboard(
+  currentStatusKey
+) {
+
+  return {
+
+    inline_keyboard: [
+
+      [
+        {
+          text:
+            '⚠️ Видалити цього ліда назавжди?',
+
+          callback_data:
+            'lead_delete:noop'
+        }
+      ],
+
+      [
+        {
+          text:
+            '🗑️ Так, видалити',
+
+          callback_data:
+            'lead_delete:confirm'
+        }
+      ],
+
+      [
+        {
+          text:
+            '↩️ Скасувати',
+
+          callback_data:
+            `lead_delete:cancel:${
+              currentStatusKey ||
+              'new'
+            }`
+        }
+      ]
+
+    ]
+
+  };
+
+}
+
+
+/*
+ * =========================================================
+ * DETECT CURRENT STATUS
+ * =========================================================
+ */
+
+function detectStatusKeyFromText(
+  value
+) {
+
+  const text =
+    String(
+      value ||
+      ''
+    ).toUpperCase();
+
+
+  if (
+    text.includes(
+      'СТАТУС: В РОБОТІ'
+    )
+  ) {
+
+    return 'work';
+
+  }
+
+
+  if (
+    text.includes(
+      'СТАТУС: ЗВ’ЯЗАЛИСЬ'
+    ) ||
+    text.includes(
+      "СТАТУС: ЗВ'ЯЗАЛИСЬ"
+    )
+  ) {
+
+    return 'contacted';
+
+  }
+
+
+  if (
+    text.includes(
+      'СТАТУС: НЕАКТУАЛЬНИЙ'
+    )
+  ) {
+
+    return 'irrelevant';
+
+  }
+
+
+  if (
+    text.includes(
+      'СТАТУС: ВИКОНАНО'
+    )
+  ) {
+
+    return 'done';
+
+  }
+
+
+  return 'new';
+
+}
+
+
+/*
+ * =========================================================
+ * UPDATE LEAD TEXT
  * =========================================================
  */
 
@@ -405,13 +1015,14 @@ function buildUpdatedLeadText(
 
   let base =
     String(
-      currentText || ''
+      currentText ||
+      ''
     );
 
 
   /*
-   * Якщо статус уже був,
-   * видаляємо старий статусний блок.
+   * Якщо картка вже мала статус,
+   * видаляємо попередній статусний блок.
    */
 
   base =
@@ -426,10 +1037,16 @@ function buildUpdatedLeadText(
 
 
   /*
-   * Міняємо іконку першого рядка.
+   * =========================================================
+   * UPDATE TITLE ICON
+   * =========================================================
+   *
+   * 🆕 → 🟡 → 🟢 → ⚫ → 🏁
    */
 
-  if (lines.length) {
+  if (
+    lines.length
+  ) {
 
     const currentTitle =
       lines[0]
@@ -457,17 +1074,17 @@ function buildUpdatedLeadText(
 
     '',
 
-    `<b>Статус:</b> ${
-      html(status.label)
-    }`,
+    `<b>Статус:</b> ${html(
+      status.label
+    )}`,
 
-    `<b>Менеджер:</b> ${
-      html(managerName)
-    }`,
+    `<b>Менеджер:</b> ${html(
+      managerName
+    )}`,
 
-    `<b>Оновлено:</b> ${
-      html(formatNow())
-    }`
+    `<b>Оновлено:</b> ${html(
+      formatNow()
+    )}`
 
   ].join('\n');
 
@@ -476,14 +1093,22 @@ function buildUpdatedLeadText(
 
 /*
  * =========================================================
- * RESTORE HTML FORMATTING
+ * RESTORE TELEGRAM HTML
  * =========================================================
+ *
+ * callback.message.text приходить
+ * із Telegram уже без HTML.
+ *
+ * Тому після зміни статусу
+ * відновлюємо жирні назви полів.
  */
 
 function formatLeadText(text) {
 
   const escaped =
-    html(text);
+    html(
+      text
+    );
 
 
   const lines =
@@ -499,22 +1124,44 @@ function formatLeadText(text) {
       ) => {
 
         /*
-         * Перший рядок
+         * Заголовок картки.
          */
 
-        if (index === 0) {
+        if (
+          index === 0
+        ) {
 
-          return `<b>${line}</b>`;
+          return (
+            `<b>${line}</b>`
+          );
 
         }
 
 
         /*
-         * Поля типу:
+         * Заголовок блоку.
+         */
+
+        if (
+          line ===
+          'Атрибуція реклами'
+        ) {
+
+          return (
+            '<b>Атрибуція реклами</b>'
+          );
+
+        }
+
+
+        /*
+         * Поля:
          *
          * Ім’я:
          * Телефон:
          * Email:
+         * utm_source:
+         * тощо.
          */
 
         const match =
@@ -528,22 +1175,6 @@ function formatLeadText(text) {
           return (
             `<b>${match[1]}:</b>` +
             `${match[2]}`
-          );
-
-        }
-
-
-        /*
-         * Заголовок атрибуції
-         */
-
-        if (
-          line ===
-          'Атрибуція реклами'
-        ) {
-
-          return (
-            '<b>Атрибуція реклами</b>'
           );
 
         }
@@ -578,9 +1209,11 @@ function isAuthorizedManager(
 
 
   /*
-   * Якщо список менеджерів
-   * поки не заданий,
-   * кнопки доступні учасникам групи.
+   * Якщо TELEGRAM_MANAGER_IDS
+   * не заданий,
+   *
+   * статусні кнопки доступні
+   * всім учасникам групи.
    */
 
   if (!configured) {
@@ -600,11 +1233,15 @@ function isAuthorizedManager(
           item.trim()
       )
 
-      .filter(Boolean);
+      .filter(
+        Boolean
+      );
 
 
   return allowed.includes(
-    String(userId)
+    String(
+      userId
+    )
   );
 
 }
@@ -627,11 +1264,16 @@ function getManagerName(user) {
 
   const fullName =
     [
+
       user.first_name,
+
       user.last_name
+
     ]
 
-      .filter(Boolean)
+      .filter(
+        Boolean
+      )
 
       .join(' ')
 
@@ -649,26 +1291,39 @@ function getManagerName(user) {
 
 /*
  * =========================================================
- * CALLBACK ANSWER
+ * ANSWER CALLBACK
  * =========================================================
  */
 
-async function answerCallback(
+async function safeAnswerCallback(
   token,
   callbackQueryId,
   text
 ) {
 
-  return telegram(
-    token,
-    'answerCallbackQuery',
-    {
-      callback_query_id:
-        callbackQueryId,
+  try {
 
-      text
-    }
-  );
+    await telegram(
+      token,
+      'answerCallbackQuery',
+      {
+
+        callback_query_id:
+          callbackQueryId,
+
+        text
+
+      }
+    );
+
+  } catch (error) {
+
+    console.error(
+      'answerCallbackQuery error:',
+      error
+    );
+
+  }
 
 }
 
@@ -689,15 +1344,22 @@ async function telegram(
     await fetch(
       `${TELEGRAM_API}/bot${token}/${method}`,
       {
-        method: 'POST',
+
+        method:
+          'POST',
 
         headers: {
+
           'Content-Type':
             'application/json'
+
         },
 
         body:
-          JSON.stringify(payload)
+          JSON.stringify(
+            payload
+          )
+
       }
     );
 
@@ -753,7 +1415,9 @@ function parseBody(body) {
 
   try {
 
-    return JSON.parse(body);
+    return JSON.parse(
+      body
+    );
 
   } catch {
 
@@ -772,7 +1436,9 @@ function parseBody(body) {
 
 function html(value) {
 
-  return String(value)
+  return String(
+    value
+  )
 
     .replaceAll(
       '&',
@@ -800,20 +1466,24 @@ function html(value) {
 
 function formatNow() {
 
-  return new Intl.DateTimeFormat(
-    'uk-UA',
-    {
-      timeZone:
-        'Europe/Kyiv',
+  return (
+    new Intl.DateTimeFormat(
+      'uk-UA',
+      {
 
-      dateStyle:
-        'medium',
+        timeZone:
+          'Europe/Kyiv',
 
-      timeStyle:
-        'short'
-    }
-  ).format(
-    new Date()
+        dateStyle:
+          'medium',
+
+        timeStyle:
+          'short'
+
+      }
+    ).format(
+      new Date()
+    )
   );
 
 }

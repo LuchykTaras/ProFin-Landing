@@ -39,9 +39,13 @@ export default async function handler(req, res) {
 
 
   /*
-   * Honeypot.
-   * Якщо приховане поле заповнене ботом,
-   * просто повертаємо успіх і нічого не надсилаємо.
+   * =========================================================
+   * HONEYPOT
+   * =========================================================
+   *
+   * Приховане поле форми.
+   * Якщо його заповнив автоматичний бот,
+   * заявку у Telegram не передаємо.
    */
 
   if (clean(body.website)) {
@@ -53,9 +57,16 @@ export default async function handler(req, res) {
   }
 
 
+  /*
+   * =========================================================
+   * NORMALIZE LEAD
+   * =========================================================
+   */
+
   const lead = normalizeLead(body);
 
-  const validationError = validateLead(lead);
+  const validationError =
+    validateLead(lead);
 
 
   if (validationError) {
@@ -68,25 +79,43 @@ export default async function handler(req, res) {
   }
 
 
+  /*
+   * =========================================================
+   * TELEGRAM CONFIG
+   * =========================================================
+   */
+
   const botToken =
     process.env.TELEGRAM_BOT_TOKEN;
 
+
   const chatId =
     process.env.TELEGRAM_CHAT_ID;
+
+
+  /*
+   * Визначаємо гілку Telegram
+   * відповідно до джерела ліда.
+   */
 
   const topicId =
     resolveTopicId(lead);
 
 
-  if (!botToken || !chatId) {
+  if (
+    !botToken ||
+    !chatId
+  ) {
 
     console.error(
       'Missing TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID'
     );
 
+
     return res.status(500).json({
       ok: false,
-      error: 'Telegram integration is not configured.'
+      error:
+        'Telegram integration is not configured.'
     });
 
   }
@@ -99,74 +128,98 @@ export default async function handler(req, res) {
       lead.source
     );
 
+
     return res.status(500).json({
       ok: false,
-      error: 'Telegram topic routing is not configured.'
+      error:
+        'Telegram topic routing is not configured.'
     });
 
   }
 
 
+  /*
+   * =========================================================
+   * SEND LEAD
+   * =========================================================
+   */
+
   try {
 
     /*
-     * Надсилаємо лід у відповідну Telegram-гілку.
+     * Спочатку створюємо повідомлення.
      *
      * disable_notification:true
-     * означає, що картка не створює зайвий звуковий push,
-     * але залишається непрочитаною у відповідній гілці.
+     * прибирає зайвий звуковий push.
+     *
+     * При цьому повідомлення залишається
+     * непрочитаним у відповідній гілці.
      */
 
-    const sent = await telegram(
-      botToken,
-      'sendMessage',
-      {
-        chat_id: chatId,
+    const sent =
+      await telegram(
+        botToken,
+        'sendMessage',
+        {
 
-        message_thread_id:
-          Number(topicId),
+          chat_id:
+            chatId,
 
-        text:
-          buildLeadMessage(
-            lead,
-            null
-          ),
+          message_thread_id:
+            Number(topicId),
 
-        parse_mode:
-          'HTML',
+          text:
+            buildLeadMessage(
+              lead,
+              null
+            ),
 
-        disable_web_page_preview:
-          true,
+          parse_mode:
+            'HTML',
 
-        disable_notification:
-          true,
+          disable_web_page_preview:
+            true,
 
-        reply_markup:
-          buildLeadKeyboard()
-      }
-    );
+          disable_notification:
+            true,
+
+          reply_markup:
+            buildLeadKeyboard()
+
+        }
+      );
 
 
     /*
-     * Поки немає окремої БД,
-     * використовуємо Telegram message_id
-     * як простий номер ліда.
+     * =========================================================
+     * LEAD NUMBER
+     * =========================================================
+     *
+     * БД поки немає.
+     *
+     * Тому тимчасово використовуємо
+     * Telegram message_id як номер ліда.
      */
 
     const leadNumber =
-      String(sent.message_id)
-        .padStart(4, '0');
+      String(
+        sent.message_id
+      ).padStart(
+        4,
+        '0'
+      );
 
 
     /*
-     * Оновлюємо картку,
-     * додаючи номер ліда.
+     * Після отримання message_id
+     * оновлюємо заголовок картки.
      */
 
     await telegram(
       botToken,
       'editMessageText',
       {
+
         chat_id:
           chatId,
 
@@ -187,6 +240,7 @@ export default async function handler(req, res) {
 
         reply_markup:
           buildLeadKeyboard()
+
       }
     );
 
@@ -229,7 +283,7 @@ export default async function handler(req, res) {
 
 /*
  * =========================================================
- * ROUTING ПО TELEGRAM TOPICS
+ * TELEGRAM TOPIC ROUTING
  * =========================================================
  */
 
@@ -240,6 +294,10 @@ function resolveTopicId(lead) {
       .toLowerCase();
 
 
+  /*
+   * Facebook / Instagram / Meta
+   */
+
   if (
     source.includes('facebook') ||
     source.includes('instagram') ||
@@ -247,31 +305,45 @@ function resolveTopicId(lead) {
     source.includes('fb')
   ) {
 
-    return process.env
-      .TELEGRAM_TOPIC_FACEBOOK_ID;
+    return (
+      process.env
+        .TELEGRAM_TOPIC_FACEBOOK_ID
+    );
 
   }
 
+
+  /*
+   * Google
+   */
 
   if (
     source.includes('google')
   ) {
 
-    return process.env
-      .TELEGRAM_TOPIC_GOOGLE_ID;
+    return (
+      process.env
+        .TELEGRAM_TOPIC_GOOGLE_ID
+    );
 
   }
 
 
-  return process.env
-    .TELEGRAM_TOPIC_OTHER_ID;
+  /*
+   * Все інше
+   */
+
+  return (
+    process.env
+      .TELEGRAM_TOPIC_OTHER_ID
+  );
 
 }
 
 
 /*
  * =========================================================
- * INLINE BUTTONS
+ * LEAD BUTTONS
  * =========================================================
  */
 
@@ -307,6 +379,26 @@ function buildLeadKeyboard() {
           callback_data:
             'lead_status:irrelevant'
         }
+      ],
+
+      [
+        {
+          text:
+            '🏁 Виконано',
+
+          callback_data:
+            'lead_status:done'
+        }
+      ],
+
+      [
+        {
+          text:
+            '🗑️ Видалити',
+
+          callback_data:
+            'lead_delete:request'
+        }
       ]
 
     ]
@@ -318,7 +410,7 @@ function buildLeadKeyboard() {
 
 /*
  * =========================================================
- * TELEGRAM MESSAGE
+ * LEAD MESSAGE
  * =========================================================
  */
 
@@ -329,7 +421,9 @@ function buildLeadMessage(
 
   const title =
     leadNumber
-      ? `🆕 <b>Лід #${html(leadNumber)}</b>`
+      ? `🆕 <b>Лід #${html(
+          leadNumber
+        )}</b>`
       : '🆕 <b>Новий лід ProFin OS</b>';
 
 
@@ -340,27 +434,39 @@ function buildLeadMessage(
     '',
 
     `<b>Джерело:</b> ${html(
-      valueOrDash(lead.source)
+      valueOrDash(
+        lead.source
+      )
     )}`,
 
     `<b>Ім’я:</b> ${html(
-      valueOrDash(lead.name)
+      valueOrDash(
+        lead.name
+      )
     )}`,
 
     `<b>Компанія:</b> ${html(
-      valueOrDash(lead.company)
+      valueOrDash(
+        lead.company
+      )
     )}`,
 
     `<b>Телефон:</b> ${html(
-      valueOrDash(lead.phone)
+      valueOrDash(
+        lead.phone
+      )
     )}`,
 
     `<b>Email:</b> ${html(
-      valueOrDash(lead.email)
+      valueOrDash(
+        lead.email
+      )
     )}`,
 
     `<b>Зараз використовує:</b> ${html(
-      valueOrDash(lead.currentSystem)
+      valueOrDash(
+        lead.currentSystem
+      )
     )}`,
 
     '',
@@ -368,37 +474,65 @@ function buildLeadMessage(
     '<b>Атрибуція реклами</b>',
 
     `<b>utm_source:</b> ${html(
-      valueOrDash(lead.utmSource)
+      valueOrDash(
+        lead.utmSource
+      )
     )}`,
 
     `<b>utm_medium:</b> ${html(
-      valueOrDash(lead.utmMedium)
+      valueOrDash(
+        lead.utmMedium
+      )
     )}`,
 
     `<b>utm_campaign:</b> ${html(
-      valueOrDash(lead.utmCampaign)
+      valueOrDash(
+        lead.utmCampaign
+      )
     )}`,
 
     `<b>utm_content:</b> ${html(
-      valueOrDash(lead.utmContent)
+      valueOrDash(
+        lead.utmContent
+      )
     )}`,
 
     `<b>utm_term:</b> ${html(
-      valueOrDash(lead.utmTerm)
+      valueOrDash(
+        lead.utmTerm
+      )
+    )}`,
+
+    `<b>fbclid:</b> ${html(
+      valueOrDash(
+        lead.fbclid
+      )
+    )}`,
+
+    `<b>gclid:</b> ${html(
+      valueOrDash(
+        lead.gclid
+      )
     )}`,
 
     '',
 
     `<b>Сторінка:</b> ${html(
-      valueOrDash(lead.pageUrl)
+      valueOrDash(
+        lead.pageUrl
+      )
     )}`,
 
     `<b>Referrer:</b> ${html(
-      valueOrDash(lead.referrer)
+      valueOrDash(
+        lead.referrer
+      )
     )}`,
 
     `<b>Час:</b> ${html(
-      formatDate(lead.submittedAt)
+      formatDate(
+        lead.submittedAt
+      )
     )}`
 
   ].join('\n');
@@ -422,7 +556,9 @@ async function telegram(
     await fetch(
       `${TELEGRAM_API}/bot${token}/${method}`,
       {
-        method: 'POST',
+
+        method:
+          'POST',
 
         headers: {
           'Content-Type':
@@ -430,7 +566,10 @@ async function telegram(
         },
 
         body:
-          JSON.stringify(payload)
+          JSON.stringify(
+            payload
+          )
+
       }
     );
 
@@ -468,12 +607,15 @@ async function telegram(
 function parseBody(body) {
 
   if (!body) {
+
     return null;
+
   }
 
 
   if (
-    typeof body === 'object'
+    typeof body ===
+    'object'
   ) {
 
     return body;
@@ -483,7 +625,9 @@ function parseBody(body) {
 
   try {
 
-    return JSON.parse(body);
+    return JSON.parse(
+      body
+    );
 
   } catch {
 
@@ -496,7 +640,7 @@ function parseBody(body) {
 
 /*
  * =========================================================
- * LEAD NORMALIZATION
+ * NORMALIZE DATA
  * =========================================================
  */
 
@@ -505,60 +649,140 @@ function normalizeLead(body) {
   return {
 
     name:
-      clean(body.name)
-        .slice(0, 100),
+      clean(
+        body.name
+      ).slice(
+        0,
+        100
+      ),
+
 
     company:
-      clean(body.company)
-        .slice(0, 120),
+      clean(
+        body.company
+      ).slice(
+        0,
+        120
+      ),
+
 
     phone:
-      clean(body.phone)
-        .slice(0, 40),
+      clean(
+        body.phone
+      ).slice(
+        0,
+        40
+      ),
+
 
     email:
-      clean(body.email)
-        .slice(0, 160),
+      clean(
+        body.email
+      ).slice(
+        0,
+        160
+      ),
+
 
     currentSystem:
-      clean(body.currentSystem)
-        .slice(0, 120),
+      clean(
+        body.currentSystem
+      ).slice(
+        0,
+        120
+      ),
 
 
     source:
-      clean(body.source)
-        .slice(0, 120) ||
+      clean(
+        body.source
+      ).slice(
+        0,
+        120
+      ) ||
       'Прямий / невідомий',
 
 
     utmSource:
-      clean(body.utmSource)
-        .slice(0, 160),
+      clean(
+        body.utmSource
+      ).slice(
+        0,
+        160
+      ),
+
 
     utmMedium:
-      clean(body.utmMedium)
-        .slice(0, 160),
+      clean(
+        body.utmMedium
+      ).slice(
+        0,
+        160
+      ),
+
 
     utmCampaign:
-      clean(body.utmCampaign)
-        .slice(0, 200),
+      clean(
+        body.utmCampaign
+      ).slice(
+        0,
+        200
+      ),
+
 
     utmContent:
-      clean(body.utmContent)
-        .slice(0, 200),
+      clean(
+        body.utmContent
+      ).slice(
+        0,
+        200
+      ),
+
 
     utmTerm:
-      clean(body.utmTerm)
-        .slice(0, 200),
+      clean(
+        body.utmTerm
+      ).slice(
+        0,
+        200
+      ),
+
+
+    fbclid:
+      clean(
+        body.fbclid
+      ).slice(
+        0,
+        500
+      ),
+
+
+    gclid:
+      clean(
+        body.gclid
+      ).slice(
+        0,
+        500
+      ),
 
 
     pageUrl:
-      clean(body.pageUrl)
-        .slice(0, 1000),
+      clean(
+        body.pageUrl
+      ).slice(
+        0,
+        1000
+      ),
+
 
     referrer:
-      clean(body.referrer)
-        .slice(0, 1000),
+      clean(
+        body.referrer
+      ).slice(
+        0,
+        1000
+      ),
+
 
     submittedAt:
       normalizeDate(
@@ -595,7 +819,9 @@ function validateLead(lead) {
   if (
     lead.email &&
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      .test(lead.email)
+      .test(
+        lead.email
+      )
   ) {
 
     return 'Перевірте Email.';
@@ -618,7 +844,8 @@ function isAllowedOrigin(req) {
 
   const configured =
     clean(
-      process.env.ALLOWED_ORIGINS
+      process.env
+        .ALLOWED_ORIGINS
     );
 
 
@@ -649,7 +876,9 @@ function isAllowedOrigin(req) {
         item =>
           item.trim()
       )
-      .filter(Boolean);
+      .filter(
+        Boolean
+      );
 
 
   return allowed.includes(
@@ -676,14 +905,19 @@ function clean(value) {
 
 function valueOrDash(value) {
 
-  return value || '—';
+  return (
+    value ||
+    '—'
+  );
 
 }
 
 
 function html(value) {
 
-  return String(value)
+  return String(
+    value
+  )
 
     .replaceAll(
       '&',
@@ -717,13 +951,17 @@ function normalizeDate(value) {
     )
   ) {
 
-    return new Date()
-      .toISOString();
+    return (
+      new Date()
+        .toISOString()
+    );
 
   }
 
 
-  return date.toISOString();
+  return (
+    date.toISOString()
+  );
 
 }
 
@@ -732,20 +970,24 @@ function formatDate(value) {
 
   try {
 
-    return new Intl.DateTimeFormat(
-      'uk-UA',
-      {
-        timeZone:
-          'Europe/Kyiv',
+    return (
+      new Intl.DateTimeFormat(
+        'uk-UA',
+        {
 
-        dateStyle:
-          'medium',
+          timeZone:
+            'Europe/Kyiv',
 
-        timeStyle:
-          'short'
-      }
-    ).format(
-      new Date(value)
+          dateStyle:
+            'medium',
+
+          timeStyle:
+            'short'
+
+        }
+      ).format(
+        new Date(value)
+      )
     );
 
   } catch {
