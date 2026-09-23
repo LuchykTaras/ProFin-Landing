@@ -555,3 +555,75 @@ footer{
   padding-top:40px;
   padding-bottom:40px;
 }
+
+/* PATCH — compact contacts */
+
+.form-contacts{
+  margin-top:10px;
+}
+
+.form-contacts-title{
+  margin-bottom:8px;
+  font-size:14px;
+  font-weight:700;
+  color:#101412;
+}
+
+.form-contacts-list{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px 18px;
+}
+
+.form-contact-item{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+
+  color:#5F6D67;
+  font-size:13px;
+  font-weight:600;
+  line-height:1.3;
+
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.form-contact-item:hover{
+  color:#0DA47A;
+}
+
+.form-contact-icon,
+.telegram-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+
+  flex:0 0 16px;
+}
+
+.form-contact-icon svg,
+.telegram-icon svg{
+  display:block;
+
+  width:16px !important;
+  height:16px !important;
+  min-width:16px !important;
+  max-width:16px !important;
+  max-height:16px !important;
+}
+
+.telegram-icon{
+  color:#229ED9;
+}
+
+.form-contact-icon{
+  color:#0DA47A;
+}
